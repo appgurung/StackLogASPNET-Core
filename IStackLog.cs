@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using StackLog.Configuration;
 
 namespace StackLog
 {
@@ -10,7 +11,7 @@ namespace StackLog
         Task LogInformation(string message);
         Task LogDebug(string message);
         Task LogWarning(string message);
-        Task LogCloudWatch(StackLoggerActionMethodInformation action);
+        Task LogCloudWatch(StackLogExceptionInformation logInformation);
         Task LogError(string message);
     }
 }
