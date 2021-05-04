@@ -13,7 +13,7 @@ namespace StackLog
         Task LogCloudWatch(StackLogResponse main);
     }
 
-    public class LoggerService : ILoggerService
+    public sealed class LoggerService : ILoggerService
     {
         private string stackKey;
         private IStackLogHost host;

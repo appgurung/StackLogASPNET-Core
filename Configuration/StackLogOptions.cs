@@ -2,10 +2,7 @@ namespace StackLog.Configuration
 {
     public class StackLogOptions
     {
-        public StackLogOptions()
-        {
-            
-        }
+       
         public string secretKey { get; set; }
         public string bucketKey { get; set; }
         public bool enableCloudWatch { get; set; } = true;

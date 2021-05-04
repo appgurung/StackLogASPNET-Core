@@ -1,0 +1,56 @@
+using System;
+using System.Threading.Tasks;
+using StackLog.Configuration;
+
+namespace StackLog
+{
+    public interface IStackLogBaseExtension : IStackLog
+    {
+        
+    }
+
+    public class StackLogBaseExtension : IStackLogBaseExtension
+    {
+        private IStackLog _logger;
+
+        public StackLogBaseExtension(IStackLog logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task LogFatal(string message)
+        {
+            _logger.LogFatal(message);
+        }
+
+        public async Task LogFatal(Exception es)
+        {
+            _logger.LogFatal(es);
+        }
+
+        public async Task LogInformation(string message)
+        {
+            _logger.LogInformation(message);
+        }
+
+        public async Task LogDebug(string message)
+        {
+            _logger.LogDebug(message);
+        }
+
+        public async Task LogWarning(string message)
+        {
+            _logger.LogWarning(message);
+        }
+
+        public async Task LogCloudWatch(StackLogExceptionInformation logInformation)
+        {
+            _logger.LogCloudWatch(logInformation);
+        }
+
+        public async Task LogError(string message)
+        {
+            _logger.LogWarning(message);
+        }
+    }
+}
