@@ -1,8 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackLog", "StackLog.csproj", "{35907CF0-8959-4CCF-AC2D-9C52F650ED7F}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackLog", "StackLog.csproj", "{35907CF0-8959-4CCF-AC2D-9C52F650ED7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackLog.WebMVC.HttpModule", "StackLog.WebMVC.HttpModule\StackLog.WebMVC.HttpModule.csproj", "{1EEAEC9D-A3B9-43E0-8588-E6509CBC4073}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackLog.HttpModule", "..\StackLog.HttpModule\StackLog.HttpModule.csproj", "{6E4A7333-6F1F-4889-BFA9-2A88A5642772}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +23,15 @@ Global
 		{1EEAEC9D-A3B9-43E0-8588-E6509CBC4073}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EEAEC9D-A3B9-43E0-8588-E6509CBC4073}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EEAEC9D-A3B9-43E0-8588-E6509CBC4073}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E4A7333-6F1F-4889-BFA9-2A88A5642772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E4A7333-6F1F-4889-BFA9-2A88A5642772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E4A7333-6F1F-4889-BFA9-2A88A5642772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E4A7333-6F1F-4889-BFA9-2A88A5642772}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9FF7262-CC5B-4AB9-8B20-A31D7D324A23}
 	EndGlobalSection
 EndGlobal
