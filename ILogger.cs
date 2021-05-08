@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Refit;
@@ -28,6 +29,10 @@ namespace StackLog
         //private IStackLog stakcLog;
         public LoggerService(string bucketKey, string secretKey, bool enableCloudWatch=false)
         {
+            if (String.IsNullOrEmpty(bucketKey) || String.IsNullOrEmpty(secretKey))
+            {
+                throw new StackLogException(StackLogExceptionErrors.BUCKET_KEY_MISSING + "and or " + StackLogExceptionErrors.SECRET_KEY_MISSING);
+            }
             stackKey = "cToErsOcQ";
             host = RestService.For<IStackLogHost>("http://www.stacklog.io:8540/");
             this.bucketKey = bucketKey;
@@ -46,13 +51,12 @@ namespace StackLog
                 {
                     if(_response.responseCode != "00")
                     {
-                        throw new StackLogException(JsonConvert.SerializeObject(_response.responseData));
+                        throw new StackLogException(StackLogExceptionErrors.MakeError(JsonConvert.SerializeObject(_response.responseData)));
                     }
                     
                 }
                
-                throw new StackLogException(JsonConvert.SerializeObject(new { message = "unable to create log, " +
-                        "please pass appropriate secret key and bucket key"}));
+                throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
                 
             });
 
@@ -71,13 +75,12 @@ namespace StackLog
                     {
                         if (_response.responseCode != "00")
                         {
-                            throw new StackLogException(JsonConvert.SerializeObject(_response.responseData));
+                            throw new StackLogException(StackLogExceptionErrors.MakeError(JsonConvert.SerializeObject(_response.responseData)));
                         }
 
                     }
                    
-                    throw new StackLogException(JsonConvert.SerializeObject(new { message = "unable to create log, " +
-                            "please pass appropriate secret key and bucket key" }));
+                    throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
                 });
             }
             

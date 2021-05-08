@@ -20,6 +20,19 @@ using Microsoft.Extensions.Options;
 
 namespace StackLog.Configuration
 {
+    public class StackLogExceptionErrors
+    {
+        public const string BUCKET_KEY_MISSING = "bucket key is missing....";
+        public const string SECRET_KEY_MISSING = "secret key is missing";
+
+        public const string UNABLE_TO_CREATE_LOG =
+            "unable to create log, please pass appropriate secret key and bucket key";
+
+        public static string MakeError(string errorMessage)
+        {
+            return errorMessage;
+        }
+    }
     public static class StackLogExtensionPoints
     {
         public static IApplicationBuilder UseStackLog(this IApplicationBuilder app)
