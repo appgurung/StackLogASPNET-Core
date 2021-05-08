@@ -9,5 +9,6 @@ namespace StackLog.Configuration
         public bool enableFileLogging { get; set; } = false;
         public bool enableConsoleLogging { get; set; } = false;
         public string filePath { get; set; }
+        public string errorViewName { get; set; } = "Error";
     }
 }

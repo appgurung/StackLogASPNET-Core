@@ -65,6 +65,16 @@ namespace StackLog
             _logger = logger;
         }
 
+        public  Task LogInfo(string message, string logType, string path)
+        {
+           // base.LogInformation(message);
+           return LogToFile(new StackLogRequest(){logMessage = message}, logType, path, logType);
+        }
+
+        public Task LogInfo(StackLogRequest req, string logType, string path)
+        {
+            return LogToFile(req, logType, path, logType);
+        }
        
         private Task LogToFile(StackLogRequest request, string logType, string path="", string filename="")
         {
@@ -82,7 +92,7 @@ namespace StackLog
             }
             
 
-            string logFileName = $"{filename}_{DateTime.Today.ToString("ddMMMyyyy")}.ilog";
+            string logFileName = $"{filename}_{DateTime.Today.ToString("ddMMMyyyy")}.stlog";
 
             lock (InfoSyncObj)
             {

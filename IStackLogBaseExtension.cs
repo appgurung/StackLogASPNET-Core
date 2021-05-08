@@ -40,7 +40,7 @@ namespace StackLog
             _logger.LogWarning(message);
         }
 
-        public async Task LogCloudWatch(StackLogExceptionInformation logInformation)
+        public async Task LogCloudWatch(StackLogResponse logInformation)
         {
             _logger.LogCloudWatch(logInformation);
         }

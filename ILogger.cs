@@ -11,7 +11,7 @@ namespace StackLog
     {
         
         Task Log(StackLogRequest request);
-        Task LogCloudWatch(StackLogExceptionInformation main);
+        Task LogCloudWatch(StackLogResponse main);
     }
 
     public sealed class LoggerService : ILoggerService
@@ -62,7 +62,7 @@ namespace StackLog
 
         }
 
-        public async Task LogCloudWatch(StackLogExceptionInformation main)
+        public async Task LogCloudWatch(StackLogResponse main)
         {
             if (this.enableCloudWatch)
             {
