@@ -16,7 +16,7 @@ namespace StackLog
             await _service.Log(request);
         }
 
-        public async Task LogCloudWatch(StackLogResponse main)
+        public async Task LogCloudWatch(StackLogExceptionInformation main)
         {
             await _service.LogCloudWatch(main);
         }

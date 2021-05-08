@@ -1,4 +1,4 @@
-using StackLogger.Logger.Mvc.ActorService;
+//using StackLogger.Logger.Mvc.ActorService;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -56,8 +56,6 @@ namespace StackLog.Configuration
                 this.options = options.Value;
                 this._logger = new StackLog(this.options);
                 //StackLoggerMvc.getInstance(this.options.secretKey, this.options.bucketKey, this.options.enableCloudWatch);
-
-
             }
 
             public async Task InvokeAsync(HttpContext context)

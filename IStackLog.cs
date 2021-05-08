@@ -1,4 +1,8 @@
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using StackLog.Configuration;
 
@@ -55,62 +59,139 @@ namespace StackLog
                     _log.Log(loggerRequest);
                     break;
                 case StackLogType.StackFatal:
+                    loggerRequest.logTypeId = StackLogTypeCode.StackFatalCode;
                     _log.Log(loggerRequest);
                     break;
                 case StackLogType.StackDebug:
+                    loggerRequest.logTypeId = StackLogTypeCode.StackDebugCode;
                     _log.Log(loggerRequest);
                     break;
                 case StackLogType.StackWarn:
+                    loggerRequest.logTypeId = StackLogTypeCode.StackWarnCode;
                     _log.Log(loggerRequest);
                     break;
                 case StackLogType.StackError:
+                    loggerRequest.logTypeId = StackLogTypeCode.StackErrorCode;
                     _log.Log(loggerRequest);
                     break;
             
             }
             
-            _log.Log(loggerRequest);
+          //  _log.Log(loggerRequest);
         }
         public Task LogFatal(string message)
         {
-            var log = new InitializeStackLog(CreateLog);
-            
-            DoExecuteLog(log, StackLogType.StackFatal, new StackLogRequest()
+            return LogToLoggerService(LogDelegateProp, StackLogType.StackFatal, new StackLogRequest()
             {
-                logMessage =  message
+                logMessage = message
             });
-            
-            throw new NotImplementedException();
         }
 
         public Task LogFatal(Exception es)
         {
-            throw new NotImplementedException();
+            //new StackTrace()
+             var stackTrace = new StackTrace(es, true).GetFrame(0);
+            var exceptionObject = new StackLogExceptionInformation()
+            {
+                MethodName = stackTrace.GetMethod().Name,
+                FileName = stackTrace.GetFileName(),
+                LineNumber =stackTrace.GetFileLineNumber(),
+                //ethodParamter = ""
+            };
+
+            var methodParams = stackTrace.GetMethod().GetParameters().ToList();
+            StringBuilder methodP = new StringBuilder();
+
+            if (methodParams != null)
+            {
+                if (methodParams.Count > 0)
+                {
+                    foreach (var param in methodParams)
+                    {
+                        var currentParam = $"ParameterName:{param.Name},ParamterType:{param.ParameterType.Name}, " +
+                            $"ParameterPosition:{param.Position}, ParamaterValue";
+                        methodP.AppendLine(currentParam);
+                        
+                    }
+                }
+            }
+            //exceptionObject.MethodParamter = methodP.ToString();
+
+            var allLines = File.ReadLines(exceptionObject.FileName);
+            var takenSome = allLines.Skip(Math.Abs(exceptionObject.LineNumber - 5)).Take(5).ToList();
+            StringBuilder codeSnippet = new StringBuilder();
+            int index = 0;
+            foreach(string current in takenSome)
+            { 
+                var currentLine ="";
+                int currentIndex = takenSome.IndexOf(current);
+
+                if(currentIndex == 0)
+                {
+                    currentLine = current + "";
+                }
+                else
+                {
+                    if (index != (takenSome.Count - 1))
+                    {
+                        if (current == "" || current == "\n")
+                        {
+                            currentLine = "";
+                        }
+                        else
+                        {
+                            currentLine = current + "#";
+                        }
+
+                    }
+                    else
+                    {
+                        currentLine = current + "";
+                    }
+                }
+                
+
+                codeSnippet.Append(currentLine);
+                index++;
+            }
+            var log = new InitializeStackLog(CreateLog);
+            
+
+            string realFileName = Path.GetFileName(exceptionObject.FileName ?? "") ?? "";
+            var request = new StackLogRequest()
+            {
+                 fileLineNumber = exceptionObject.LineNumber,
+                 codeSnippet = codeSnippet.ToString(),
+                 fileName = realFileName,
+                 logMessage = es.Message,
+                 logTypeId = StackLogTypeCode.StackFatalCode,
+                 methodName = exceptionObject.MethodName,
+                 methodParam = methodP.ToString()
+            };
+
+            return LogToLoggerService(LogDelegateProp, StackLogType.StackFatal,request);
         }
 
-        public async Task LogInformation(string message)
+        public Task LogInformation(string message)
         {
-            _log.Log(new StackLogRequest()
+            return LogToLoggerService(LogDelegateProp, StackLogType.StackInformation, new StackLogRequest()
             {
-                logTypeId = StackLogTypeCode.StackInfoCode,
                 logMessage = message
             });
         }
 
-        public async Task LogDebug(string message)
+        public Task LogDebug(string message)
         {
-            _log.Log(new StackLogRequest()
+            return LogToLoggerService(LogDelegateProp, StackLogType.StackDebug, new StackLogRequest()
             {
-                logTypeId = StackLogTypeCode.StackDebugCode,
                 logMessage = message
             });
         }
 
-        public async Task LogWarning(string message)
+        public Task LogWarning(string message)
         {
-            _log.Log(new StackLogRequest()
+            return LogToLoggerService(LogDelegateProp, StackLogType.StackWarn, new StackLogRequest()
             {
-                logTypeId = StackLogTypeCode.StackWarnCode,
                 logMessage = message
             });
         }
@@ -120,13 +201,23 @@ namespace StackLog
             _log.LogCloudWatch(null);
         }
 
-        public async Task LogError(string message)
+        public  Task LogError(string message)
         {
-            _log.Log(new StackLogRequest()
+            return LogToLoggerService(LogDelegateProp, StackLogType.StackError, new StackLogRequest()
             {
-                logTypeId = StackLogTypeCode.StackErrorCode,
                 logMessage = message
             });
+        }
+        
+        private InitializeStackLog LogDelegateProp => new InitializeStackLog(CreateLog);
+
+        private Task LogToLoggerService(InitializeStackLog log, string type, StackLogRequest request)
+        {
+           // var log = new InitializeStackLog(CreateLog);
+            
+            DoExecuteLog(log,type , request);
+
+            return Task.CompletedTask;
         }
     }
 }
