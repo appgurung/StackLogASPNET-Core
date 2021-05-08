@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using StackLog.HttpModule.Configuration;
+using System.Runtime.InteropServices;
 //using StackLog.HttpModule.Configuration;
 //using Microsoft.Web.Administration;
 
@@ -59,6 +60,8 @@ namespace StackLog.Configuration
             return service;
         }
     }
+    
+    //[DllImport("StackLog.HttpModule")]
     public class StackLogConfiguration
     {
         public static object ReadConfigSettings(string key)

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/raimialiu/StackLogSDK.git/</projectUrl>
+    
+    <description>cloud logging...</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>cloudwatch errolog exception automaticLogging logging fatal StackLog stacklog stackLog Stacklog</tags>
+  </metadata>
+</package>
