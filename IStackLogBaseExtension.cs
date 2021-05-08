@@ -4,12 +4,9 @@ using StackLog.Configuration;
 
 namespace StackLog
 {
-    public interface IStackLogBaseExtension : IStackLog
-    {
-        
-    }
+    
 
-    public class StackLogBaseExtension : IStackLogBaseExtension
+    public class StackLogBaseExtension : IStackLog
     {
         private IStackLog _logger;
 
