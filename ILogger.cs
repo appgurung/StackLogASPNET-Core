@@ -27,11 +27,22 @@ namespace StackLog
 
         private bool enableCloudWatch;
         //private IStackLog stakcLog;
-        public LoggerService(string bucketKey, string secretKey, bool enableCloudWatch=false)
+        public LoggerService(StackLogOptions options=null)
         {
-            if (String.IsNullOrEmpty(bucketKey) || String.IsNullOrEmpty(secretKey))
+            if(options != null)
             {
-                throw new StackLogException(StackLogExceptionErrors.BUCKET_KEY_MISSING + "and or " + StackLogExceptionErrors.SECRET_KEY_MISSING);
+                if(!options.enableFileLogging ||  !options.enableConsoleLogging)
+                {
+                    if (String.IsNullOrEmpty(options.bucketKey) || String.IsNullOrEmpty(options.secretKey))
+                    {
+                        throw new StackLogException(StackLogExceptionErrors.BUCKET_KEY_MISSING + "and or " + StackLogExceptionErrors.SECRET_KEY_MISSING);
+                    }
+                }
+            }
+           
+            if(options == null)
+            {
+                throw new StackLogException(StackLogExceptionErrors.NULL_OPTIONS);
             }
             stackKey = "cToErsOcQ";
             host = RestService.For<IStackLogHost>("http://www.stacklog.io:8540/");

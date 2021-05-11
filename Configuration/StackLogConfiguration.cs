@@ -306,9 +306,9 @@ namespace StackLog.Configuration
 
        
         
-        public static void RegisterStackLog(GlobalFilterCollection filter, dynamic context)
+        public static void RegisterStackLog(GlobalFilterCollection filter, StackLogOptions options, dynamic context)
         {
-            var instance = new StackLog();
+            var instance = new StackLog(options);
             context.Items.Add("StackLogInstance", instance);
             filter.Add(new StackLogGlobalExceptionHandler());
             filter.Add(new StackLogWebMvcRequestInsight(instance));

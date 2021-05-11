@@ -54,12 +54,12 @@ namespace StackLog
         {
             StackLogOptions _opts = null;
 
-            var detectRunningPlatForm = RunningOnMvc();
-
-            if (detectRunningPlatForm != null)
-            {
-                _opts = detectRunningPlatForm;
-            }
+            // var detectRunningPlatForm = RunningOnMvc();
+            //
+            // if (detectRunningPlatForm != null)
+            // {
+            //     _opts = detectRunningPlatForm;
+            // }
             options = _opts;
 
         }
