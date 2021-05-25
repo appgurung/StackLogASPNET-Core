@@ -31,23 +31,30 @@ namespace StackLog
             log.Invoke(logType, loggerRequest);
         }
 
-        private StackLogOptions _options;
+        private IStackLogOptions _options;
 
         private ILoggerService _log;
-        public StackLog(StackLogOptions options=null)
+        
+        private void SetStackLogOptions(IStackLogOptions opts)
         {
-            TryReadConfiguration(out StackLogOptions result);
+            _options = opts;
+        }
+        public StackLog(IStackLogOptions options)
+        {
+            //TryReadConfiguration(out StackLogOptions result);
 
-            if (result != null && options == null)
-            {
-                _options = result;
-            }
-            else
-            {
-                _options = options;
-            }
-            
-            _log = new LoggerService(_options.bucketKey, _options.secretKey, _options.enableCloudWatch);
+            //if (result != null && options == null)
+            //{
+            //    _options = result;
+            //}
+            //else
+            //{
+            //   
+            //}
+            _options = options;
+            //options += SetStackLogOptions;
+
+            _log = new LoggerService(options);
         }
 
         public void TryReadConfiguration(out StackLogOptions options)
@@ -64,6 +71,10 @@ namespace StackLog
 
         }
 
+        private StackLogOptions RunningOnCore()
+        {
+            return default;
+        }
         private StackLogOptions RunningOnMvc()
         {
             StackLogOptions opts = null;
@@ -281,7 +292,7 @@ namespace StackLog
         }
         public async Task LogCloudWatch(StackLogResponse logInformation)
         {
-            _log.LogCloudWatch(logInformation);
+           await _log.LogCloudWatch(logInformation);
         }
 
         public  Task LogError(string message)

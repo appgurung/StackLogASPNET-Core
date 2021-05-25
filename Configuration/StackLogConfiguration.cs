@@ -1,25 +1,18 @@
 //using StackLogger.Logger.Mvc.ActorService;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
+
 using System.Web.Mvc;
 using System.Configuration;
 
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using Newtonsoft.Json;
-using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+
 using StackLog.HttpModule.Configuration;
-using System.Runtime.InteropServices;
+using Microsoft.Extensions.Options;
+
 //using StackLog.HttpModule.Configuration;
 //using Microsoft.Web.Administration;
 
@@ -49,14 +42,33 @@ namespace StackLog.Configuration
         {
             return app.UseMiddleware<StackLogConfiguration.StackLogMiddleware>();
         }
+        private static IStackLogOptions optionsForInjection { get; set; }
+        static void SetStackLogOptions(IStackLogOptions options)
+        {
+            optionsForInjection = options;
+        }
 
         public static IServiceCollection AddStackLog(this IServiceCollection service,
-            Action<StackLogOptions> options = default)
+            Action<IStackLogOptions> options)
         {
-            options = options ?? (opts => { });
-
-            service.Configure(options);
-            service.AddTransient<IStackLog, StackLog>();
+            //options.
+            IStackLogOptions opts = new StackLogOptions();
+            // service.Configure(options);
+            options(opts);
+            // options?.Invoke(opts);
+            // opts(SetStackLogOptions)
+            // x=> {
+            // IStackLogOptions stackLogOptions = new StackLogOptions();
+            //return new StackLog(optionsForInjection);
+        
+            service.AddTransient<IStackLog, StackLog>(x=> {
+                return new StackLog(opts);
+            });
+            //service.AddTransient<IStackLogOptions, StackLogOptions>(x=> { 
+            //    return 
+            //});
+            
+           // service.AddScoped<IStackLog, StackLog>();
             return service;
         }
     }
@@ -68,213 +80,54 @@ namespace StackLog.Configuration
         {
             return ConfigurationManager.AppSettings[key];
         }
-        // mvc and web api filter here
-        // .net core filter here
 
-        //public class StackLogRequestInsight : System.Web.Mvc.ActionFilterAttribute
-        //{
-        //    private IStackLog instance;
-        //    private StackLogResponse information; 
-        //    public StackLogRequestInsight()
-        //    {
-        //        //instance =  HttpContext.Items["StackLoggerInstance"] as StackLoggerMvc;
-        //        information = new StackLogResponse();
-        //        information.startTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
-        //    }
+        public static IStackLogOptions StaticSetter(IStackLogOptions options )
+        {
+            return options;
+        }
 
-        //public override void OnResultExecuted(ResultExecutedContext filterContext)
-        //{
-           
-        //    //if(filterContext.HttpContext.Response.Mo)
-        //    //information.httpResponse = filterContext.HttpContext.Response.
-        //    base.OnResultExecuted(filterContext);
-        //}
-
-        //public override void OnResultExecuting(ResultExecutingContext filterContext)
-        //{
-        //    var endDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
-        //    information.endTime = endDate;
-        //    //filterContext.HttpContext;
-        //    information.statusCode = filterContext.HttpContext.Response.StatusCode;
-        //    var requestIdPool = new Random();
-        //    string id = "";
-        //    for (var i = 0; i < 6; i++)
-        //    {
-        //        var next = Math.Floor(Convert.ToDecimal(requestIdPool.Next(1, 100)));
-        //        id += next;
-
-        //    }
-
-        //    information.requestId = id;
-
-        //    var viewResult = filterContext.Result as ViewResult;
-
-        //    if (viewResult != null)
-        //    {
-        //        if (viewResult.Model != null)
-        //        {
-        //            information.httpResponse = JsonConvert.SerializeObject(viewResult.Model);
-        //        }
-        //        else
-        //        {
-        //            var newViewResult = filterContext.Result as JsonResult;
-
-        //            if (newViewResult != null)
-        //            {
-        //                if (newViewResult.Data != null)
-        //                {
-        //                    information.httpResponse = JsonConvert.SerializeObject(newViewResult.Data);
-        //                }
-        //            }
-        //        }
-
-        //    }
-        //    else
-        //    {
-        //        var newViewResult = filterContext.Result as JsonResult;
-
-        //        if (newViewResult != null)
-        //        {
-        //            if (newViewResult.Data != null)
-        //            {
-        //                information.httpResponse = JsonConvert.SerializeObject(newViewResult.Data);
-        //            }
-        //        }
-        //    }
-
-        //    if (instance != null)
-        //    {
-        //        instance.LogCloudWatch(information);
-        //    }
-        //    else
-        //    {
-        //        string secretKeyCode = ReadConfigSettings("StackLogSecretKey").ToString();
-        //        string bucketKeyCode = ReadConfigSettings("StackLogBucketKey").ToString();
-        //        string enableCloudWatch = ReadConfigSettings("enableCloudWatch").ToString();
-        //        string enableFileLog = ReadConfigSettings("enableFileLog").ToString();
-        //        string enableConsoleLogging = ReadConfigSettings("enableConsoleLogging").ToString();
-        //        //IConfigurationBuilder build = IConfigurationBuilder.
-
-        //        bool isCloudWatchEnabled = false;
-        //        bool isFileLogEnabled = false;
-        //        bool isConsoleLogEnabled = false;
-        //        if (enableCloudWatch != null || enableCloudWatch != "")
-        //        {
-        //            isCloudWatchEnabled = enableCloudWatch == "true" || enableCloudWatch == "TRUE" || enableCloudWatch == "True" ? true : false;
-        //        }
-                
-        //        if (enableFileLog != null || enableFileLog != "")
-        //        {
-        //            isFileLogEnabled = enableFileLog == "true" || enableFileLog == "TRUE" || enableFileLog == "True" ? true : false;
-        //        }
-                
-        //        if (enableConsoleLogging != null || enableConsoleLogging != "")
-        //        {
-        //            isConsoleLogEnabled = enableFileLog == "true" || enableFileLog == "TRUE" || enableFileLog == "True" ? true : false;
-        //        }
-                
-               
-        //        instance = new StackLog(new StackLogOptions()
-        //        {
-        //            secretKey = secretKeyCode,
-        //            bucketKey = bucketKeyCode,
-        //            enableCloudWatch = isCloudWatchEnabled,
-        //            enableFileLogging = isFileLogEnabled,
-        //            enableConsoleLogging = isConsoleLogEnabled
-        //        });
-                
-        //        instance.LogCloudWatch(information);
-        //    }
-        //    base.OnResultExecuting(filterContext);
-        //}
-
-        //public override void OnActionExecuted(ActionExecutedContext filterContext)
-        //{
-        //    var responseStream = filterContext.Controller.ControllerContext.HttpContext.Response.OutputStream;
-        //    base.OnActionExecuted(filterContext);
-        //}
-
-        //public override void OnActionExecuting(ActionExecutingContext filterContext)
-        //{
-            
-           
-        //    instance = filterContext.HttpContext.Items["StackLogInstance"] as StackLog;
-        //    if (instance == null)
-        //    {
-        //        throw new StackLogException(StackLogExceptionErrors.INSTANCE_REGISTRATION_FAILED);
-        //    }
-
-
-        //    var uri = new Uri(filterContext.HttpContext.Request.Url.AbsoluteUri);
-        //    information.httpProtocol = uri.Scheme;
-        //    information.header = filterContext.HttpContext.Request.Headers.ToString();
-        //    information.userAgent = filterContext.HttpContext.Request.Headers["User-Agent"].ToString();
-        //    information.controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
-        //    information.isRequest = true;
-        //    information.controllerMethod = filterContext.ActionDescriptor.ActionName;
-        //    information.httpVerb = filterContext.HttpContext.Request.HttpMethod;
-        //    information.url = filterContext.HttpContext.Request.RawUrl;
-        //   // information.queryString = filterContext.HttpContext.Request.QueryString.ToString();
-        //    information.remoteIpAddress = filterContext.HttpContext.Request.UserHostAddress;
-        //    information.executedSqlQueries = "";
-
-        //    var serverVaraibles = filterContext.HttpContext.Request.ServerVariables;
-        //    var attributes = filterContext.ActionDescriptor.GetCustomAttributes(true);
-
-        //  //  var protocol = new Uri(filterContext.HttpContext.Request.RawUrl);
-        //    //information.httpProtocol = protocol.ToString();
-        //    StringBuilder methodAttributeInfo = new StringBuilder("{");
-
-        //    var currentActionMethodFilterAttributes = filterContext.ActionDescriptor.GetFilterAttributes(true);
-
-        //    foreach(var current in currentActionMethodFilterAttributes)
-        //    {
-        //        methodAttributeInfo.Append(current.GetType().Name + ", "); 
-        //    }
-
-        //    foreach (var currentAttribute in attributes)
-        //    {
-        //        methodAttributeInfo.Append(currentAttribute.GetType().FullName + ", ");
-        //    }
-
-        //    methodAttributeInfo.Append("}");
-        //    information.methodAttributes = methodAttributeInfo.ToString();
-        //    StringBuilder paramInfo = new StringBuilder("{");
-
-        //    foreach(var p in filterContext.ActionParameters)
-        //    {
-                
-        //        paramInfo.Append($"Name:{p.Key}, Value:{p.Value}");
-        //    }
-        //    paramInfo.Append("}");
-        //    information.queryString = paramInfo.ToString();
-        //    information.requestParam = filterContext.HttpContext?.Request.BodyToString();
-        //    //var param = filterContext.HttpContext.Request.R
-            
-        //    base.OnActionExecuting(filterContext);
-        //    //filterContext.
-        //    }
-        //}
+        public static IStackLogOptions StaticSetter(StackLogOptions opts)
+        {
+            return new StackLogOptions()
+            {
+                bucketKey = opts.bucketKey,
+                secretKey = opts.secretKey,
+                enableCloudWatch = opts.enableCloudWatch,
+                 enableConsoleLogging = opts.enableConsoleLogging,
+                  enableFileLogging = opts.enableFileLogging,
+                   errorViewName = opts.errorViewName,
+                    filePath = opts.filePath
+            };
+        }
+       
         
         public class StackLogMiddleware
         {
             private RequestDelegate _next;
-            private StackLogOptions options;
+            private IStackLogOptions options;
             private IStackLog _logger;
-        
-            public StackLogMiddleware(RequestDelegate context, IOptions<StackLogOptions> options)
+
+            private IStackLogOptions _options { get; set; }
+            private void SetStckLogOptions(IStackLogOptions options)
+            {
+                
+            }
+            public StackLogMiddleware(RequestDelegate context)
             {
                 this._next = context;
-                this.options = options.Value;
-                this._logger = new StackLog(this.options);
+              //  this.options = options.Value;
+
+               // this._logger = new StackLog(this.options);
                 //StackLoggerMvc.getInstance(this.options.secretKey, this.options.bucketKey, this.options.enableCloudWatch);
             }
 
             public async Task InvokeAsync(HttpContext context)
             {
+               IStackLog StackLogService = context.RequestServices.GetRequiredService<IStackLog>();
+                this._logger = StackLogService;
                 try
                 {
-                
+                    //context.Items.
                     await _next(context);
                 }
                 catch(Exception es)
@@ -297,7 +150,7 @@ namespace StackLog.Configuration
                     
                 }
                 
-                    throw new StackLogException("secret key is missing.....UNAUTHORIZED");
+             //       throw new StackLogException("secret key is missing.....UNAUTHORIZED");
                 
             
             }
@@ -308,7 +161,7 @@ namespace StackLog.Configuration
         
         public static void RegisterStackLog(GlobalFilterCollection filter, StackLogOptions options, dynamic context)
         {
-            var instance = new StackLog(options);
+            var instance = new StackLog(null);
             context.Items.Add("StackLogInstance", instance);
             filter.Add(new StackLogGlobalExceptionHandler());
             filter.Add(new StackLogWebMvcRequestInsight(instance));

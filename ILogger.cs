@@ -27,11 +27,11 @@ namespace StackLog
 
         private bool enableCloudWatch;
         //private IStackLog stakcLog;
-        public LoggerService(StackLogOptions options=null)
+        public LoggerService(IStackLogOptions options)
         {
             if(options != null)
             {
-                if(!options.enableFileLogging ||  !options.enableConsoleLogging)
+                if(!options.enableFileLogging)
                 {
                     if (String.IsNullOrEmpty(options.bucketKey) || String.IsNullOrEmpty(options.secretKey))
                     {
@@ -45,15 +45,16 @@ namespace StackLog
                 throw new StackLogException(StackLogExceptionErrors.NULL_OPTIONS);
             }
             stackKey = "cToErsOcQ";
-            host = RestService.For<IStackLogHost>("http://www.stacklog.io:8540/");
-            this.bucketKey = bucketKey;
-            this.secretKey = secretKey;
-            this.enableCloudWatch = enableCloudWatch;
+            host = RestService.For<IStackLogHost>("http://www.stacklog.io:8873/");
+            this.bucketKey = options.bucketKey;
+            this.secretKey = options.secretKey;
+            this.enableCloudWatch = options.enableCloudWatch;
         }
         public async Task Log(StackLogRequest request)
         {
-            await Task.Factory.StartNew(async () =>
-            {
+            request.stackKey = this.stackKey;
+            //await Task.Factory.StartNew(async () =>
+            //{
                 ApiResponse<IStackLogHostResponse> responseFromClientCall =
                     await host.CreateLogs(bucketKey, this.secretKey, request);
                 _response = responseFromClientCall.Content;
@@ -68,8 +69,9 @@ namespace StackLog
                 }
                
                 throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
-                
-            });
+
+            // });
+          //  return Task.CompletedTask;
 
         }
 
