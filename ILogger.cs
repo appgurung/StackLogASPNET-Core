@@ -67,8 +67,12 @@ namespace StackLog
                     }
                     
                 }
-               
-                throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
+         
+                if(_response == null)
+                {
+                    throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
+                }
+                
 
             // });
           //  return Task.CompletedTask;
@@ -92,8 +96,12 @@ namespace StackLog
                         }
 
                     }
-                   
-                    throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
+
+                    //           throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
+                    if (_response == null)
+                    {
+                        throw new StackLogException(StackLogExceptionErrors.UNABLE_TO_CREATE_LOG);
+                    }
                 });
             }
             
