@@ -78,12 +78,26 @@ namespace StackLog
        
         private Task LogToFile(StackLogRequest request, string logType, string path="", string filename="")
         {
+
+            
             string logTypeMessage = GetLogType(logType);
             string LogDir = path;
             if (String.IsNullOrEmpty(LogDir))
             {
-                LogDir = Path.Combine(Directory.GetCurrentDirectory(), "StackLogs", logType, 
-                    DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MMM"), DateTime.Now.ToString("ddMMMyyy"));
+                // y -> mon -> day of month -> type
+
+                LogDir = Path.Combine(Directory.GetCurrentDirectory(), "StackLogs",
+                        DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MMM"), DateTime.Now.ToString("ddMMMyyy"),
+                        logType);
+                //LogDir = Path.Combine(Directory.GetCurrentDirectory(), "StackLogs", logType, 
+                //    DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MMM"), DateTime.Now.ToString("ddMMMyyy"));
+            }
+
+            if(!String.IsNullOrEmpty(LogDir))
+            {
+                LogDir = Path.Combine(path, "StackLogs",
+                        DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MMM"), DateTime.Now.ToString("ddMMMyyy"),
+                        logType);
             }
 
             if (!Directory.Exists(LogDir))
@@ -105,6 +119,7 @@ namespace StackLog
         public static void WriteLogToFile(string message, string logFilePath, string logType = StackLogType.StackInformation)
         {
             File.AppendAllText(logFilePath, $"[Event Time::{DateTime.Now:hh':'mm':'ss}{logType}{message}]");
+            File.AppendAllText(logFilePath, "\r\n");
            // File.AppendAllText(logFilePath, $"Event Time: {DateTime.Now:hh':'mm':'ss} | {message}\r\n\r\n");
            // File.AppendAllText(logFilePath, $"------------------------------------------------------------------------------------\r\n\r\n");
         }
