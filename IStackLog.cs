@@ -152,10 +152,11 @@ namespace StackLog
             
           //  _log.Log(loggerRequest);
         }
-        public Task LogFatal(string message)
+        public async Task LogFatal(string message)
         {
-            DoFileLog(message, StackLogType.StackFatal);
-            return LogToLoggerService(LogDelegateProp, StackLogType.StackFatal, new StackLogRequest()
+            await DoConsoleLog(message, StackLogType.StackFatal);
+            await DoFileLog(message, StackLogType.StackFatal);
+            await LogToLoggerService(LogDelegateProp, StackLogType.StackFatal, new StackLogRequest()
             {
                 logMessage = message
             });
@@ -265,16 +266,47 @@ namespace StackLog
             });
         }
 
-        public Task LogWarning(string message)
+        public async Task LogWarning(string message)
         {
-            DoFileLog(message, StackLogType.StackWarn);
-            return LogToLoggerService(LogDelegateProp, StackLogType.StackWarn, new StackLogRequest()
+            
+            await DoConsoleLog(message, StackLogType.StackWarn);
+           
+            await DoFileLog(message, StackLogType.StackWarn);
+            await LogToLoggerService(LogDelegateProp, StackLogType.StackWarn, new StackLogRequest()
             {
                 logMessage = message
             });
+
+            //return Task.CompletedTask;
         }
 
-        private void DoFileLog(string message, string logType)
+        private async Task DoConsoleLog(string message, string logType)
+        {
+            // 
+            if (_options.enableConsoleLogging)
+            {
+                string msg = $"[Event Time::{DateTime.Now:hh':'mm':'ss}{logType}{message}]";
+                ConsoleColor currentColor = Console.ForegroundColor;
+                if (logType == StackLogType.StackFatal)
+                {
+                    //var formerColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+
+                if (logType == StackLogType.StackWarn)
+                {
+                    // var formerColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                }
+                Console.WriteLine(msg);
+                Debug.WriteLine(msg);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+           
+
+           // return await Task.CompletedTask;
+        }
+        private async Task DoFileLog(string message, string logType)
         {
             if (_options.enableFileLogging)
             {
@@ -319,13 +351,12 @@ namespace StackLog
             ? _options.secretKey
             : throw new StackLogException(StackLogExceptionErrors.BUCKET_KEY_MISSING);
 
-        private Task LogToLoggerService(InitializeStackLog log, string type, StackLogRequest request)
+        private async Task LogToLoggerService(InitializeStackLog log, string type, StackLogRequest request)
         {
            // var log = new InitializeStackLog(CreateLog);
             
             DoExecuteLog(log,type , request);
 
-            return Task.CompletedTask;
         }
     }
 }

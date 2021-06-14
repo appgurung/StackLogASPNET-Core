@@ -93,7 +93,7 @@ namespace StackLog
                 //    DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MMM"), DateTime.Now.ToString("ddMMMyyy"));
             }
 
-            if(!String.IsNullOrEmpty(LogDir))
+            if(!String.IsNullOrEmpty(path))
             {
                 LogDir = Path.Combine(path, "StackLogs",
                         DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MMM"), DateTime.Now.ToString("ddMMMyyy"),
@@ -118,6 +118,7 @@ namespace StackLog
         
         public static void WriteLogToFile(string message, string logFilePath, string logType = StackLogType.StackInformation)
         {
+            File.AppendAllText(logFilePath, "\r\n");
             File.AppendAllText(logFilePath, $"[Event Time::{DateTime.Now:hh':'mm':'ss}{logType}{message}]");
             File.AppendAllText(logFilePath, "\r\n");
            // File.AppendAllText(logFilePath, $"Event Time: {DateTime.Now:hh':'mm':'ss} | {message}\r\n\r\n");

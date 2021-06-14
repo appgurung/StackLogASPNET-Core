@@ -158,7 +158,7 @@ namespace StackLog.Configuration
        
 
        
-        
+        // handle mvc request
         public static void RegisterStackLog(GlobalFilterCollection filter, StackLogOptions options, dynamic context)
         {
             var instance = new StackLog(null);
@@ -172,7 +172,7 @@ namespace StackLog.Configuration
     public class AllowedFramework
     {
         public const string NETCORE = "__NETCORE__";
-        public const string ASPNET_WEBAPI = "__ASPNET_WEBAPI__";
+        public const string ASPNET_WEB_API = "__ASPNET_WEBAPI__";
         public const string ASPNET_MVC = "__ASPNET_MVC__";
         public const string XAMARIN_FORMS = "__XAMARIN_FORM__";
     }
