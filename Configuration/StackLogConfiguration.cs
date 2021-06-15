@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using StackLog.HttpModule.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 //using StackLog.HttpModule.Configuration;
 //using Microsoft.Web.Administration;
@@ -51,7 +52,9 @@ namespace StackLog.Configuration
         public static IServiceCollection AddStackLog(this IServiceCollection service,
             Action<IStackLogOptions> options)
         {
+            
             //options.
+            
             IStackLogOptions opts = new StackLogOptions();
             // service.Configure(options);
             options(opts);
@@ -60,13 +63,23 @@ namespace StackLog.Configuration
             // x=> {
             // IStackLogOptions stackLogOptions = new StackLogOptions();
             //return new StackLog(optionsForInjection);
-        
+
+            IStackLog stackLog = new StackLog(opts);
             service.AddTransient<IStackLog, StackLog>(x=> {
-                return new StackLog(opts);
+                return (StackLog)stackLog;
             });
             //service.AddTransient<IStackLogOptions, StackLogOptions>(x=> { 
             //    return 
             //});
+
+            if(opts.enableCloudWatch)
+            {
+                service.Configure<MvcOptions>(x =>
+                {
+
+                    x.Filters.Add(new StackLogCloudWatch(stackLog));
+                });
+            }
             
            // service.AddScoped<IStackLog, StackLog>();
             return service;
@@ -115,10 +128,7 @@ namespace StackLog.Configuration
             public StackLogMiddleware(RequestDelegate context)
             {
                 this._next = context;
-              //  this.options = options.Value;
-
-               // this._logger = new StackLog(this.options);
-                //StackLoggerMvc.getInstance(this.options.secretKey, this.options.bucketKey, this.options.enableCloudWatch);
+             
             }
 
             public async Task InvokeAsync(HttpContext context)

@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using StackLog.Configuration;
+using Newtonsoft.Json;
 
 namespace StackLog
 {
@@ -162,15 +163,15 @@ namespace StackLog
             });
         }
 
-        public Task LogFatal(Exception es)
+        private StackLogRequest CaptureFataInfo(Exception es)
         {
             //new StackTrace()
-             var stackTrace = new StackTrace(es, true).GetFrame(0);
+            var stackTrace = new StackTrace(es, true).GetFrame(0);
             var exceptionObject = new StackLogExceptionInformation()
             {
                 MethodName = stackTrace.GetMethod().Name,
                 FileName = stackTrace.GetFileName(),
-                LineNumber =stackTrace.GetFileLineNumber(),
+                LineNumber = stackTrace.GetFileLineNumber(),
                 //ethodParamter = ""
             };
 
@@ -186,7 +187,7 @@ namespace StackLog
                         var currentParam = $"ParameterName:{param.Name},ParamterType:{param.ParameterType.Name}, " +
                             $"ParameterPosition:{param.Position}, ParamaterValue";
                         methodP.AppendLine(currentParam);
-                        
+
                     }
                 }
             }
@@ -196,12 +197,12 @@ namespace StackLog
             var takenSome = allLines.Skip(Math.Abs(exceptionObject.LineNumber - 5)).Take(5).ToList();
             StringBuilder codeSnippet = new StringBuilder();
             int index = 0;
-            foreach(string current in takenSome)
-            { 
-                var currentLine ="";
+            foreach (string current in takenSome)
+            {
+                var currentLine = "";
                 int currentIndex = takenSome.IndexOf(current);
 
-                if(currentIndex == 0)
+                if (currentIndex == 0)
                 {
                     currentLine = current + "";
                 }
@@ -224,43 +225,53 @@ namespace StackLog
                         currentLine = current + "";
                     }
                 }
-                
+
 
                 codeSnippet.Append(currentLine);
                 index++;
             }
             var log = new InitializeStackLog(CreateLog);
-            
+
 
             string realFileName = Path.GetFileName(exceptionObject.FileName ?? "") ?? "";
             var request = new StackLogRequest()
             {
-                 fileLineNumber = exceptionObject.LineNumber,
-                 codeSnippet = codeSnippet.ToString(),
-                 fileName = realFileName,
-                 logMessage = es.Message,
-                 logTypeId = StackLogTypeCode.StackFatalCode,
-                 methodName = exceptionObject.MethodName,
-                 methodParam = methodP.ToString()
+                fileLineNumber = exceptionObject.LineNumber,
+                codeSnippet = codeSnippet.ToString(),
+                fileName = realFileName,
+                logMessage = es.Message,
+                logTypeId = StackLogTypeCode.StackFatalCode,
+                methodName = exceptionObject.MethodName,
+                methodParam = methodP.ToString()
             };
 
-            DoFileLog(request, StackLogType.StackFatal);
-            return LogToLoggerService(LogDelegateProp, StackLogType.StackFatal,request);
+            return request;
         }
 
-        public Task LogInformation(string message)
+        public async Task LogFatal(Exception es)
         {
-            DoFileLog(message, StackLogType.StackInformation);
-            return LogToLoggerService(LogDelegateProp, StackLogType.StackInformation, new StackLogRequest()
+            var request = CaptureFataInfo(es);
+
+            await DoConsoleLog(es);
+            DoFileLog(request, StackLogType.StackFatal);
+            await LogToLoggerService(LogDelegateProp, StackLogType.StackFatal,request);
+        }
+
+        public async Task LogInformation(string message)
+        {
+            await DoConsoleLog(message, StackLogType.StackInformation);
+            await DoFileLog(message, StackLogType.StackInformation);
+            await LogToLoggerService(LogDelegateProp, StackLogType.StackInformation, new StackLogRequest()
             {
                 logMessage = message
             });
         }
 
-        public Task LogDebug(string message)
+        public async Task LogDebug(string message)
         {
-            DoFileLog(message, StackLogType.StackDebug);
-            return LogToLoggerService(LogDelegateProp, StackLogType.StackDebug, new StackLogRequest()
+            await DoConsoleLog(message, StackLogType.StackDebug);
+            await DoFileLog(message, StackLogType.StackDebug);
+            await LogToLoggerService(LogDelegateProp, StackLogType.StackDebug, new StackLogRequest()
             {
                 logMessage = message
             });
@@ -280,12 +291,20 @@ namespace StackLog
             //return Task.CompletedTask;
         }
 
+        private async Task DoConsoleLog(Exception es)
+        {
+            var request = JsonConvert.SerializeObject(CaptureFataInfo(es));
+
+            await DoConsoleLog(request, StackLogType.StackFatal);
+           // Console.ForegroundColor = ConsoleColor.Red;
+
+        }
         private async Task DoConsoleLog(string message, string logType)
         {
             // 
             if (_options.enableConsoleLogging)
             {
-                string msg = $"[Event Time::{DateTime.Now:hh':'mm':'ss}{logType}{message}]";
+                string msg = $"[EVENT TIME::{DateTime.Now:hh':'mm':'ss}::LEVEL::{logType}::MESSAGE::{message}]";
                 ConsoleColor currentColor = Console.ForegroundColor;
                 if (logType == StackLogType.StackFatal)
                 {
@@ -308,19 +327,38 @@ namespace StackLog
         }
         private async Task DoFileLog(string message, string logType)
         {
-            if (_options.enableFileLogging)
-            {
-                var fl = new IStackFileLogger(this);
-                fl.LogInfo(message, logType, _options.filePath);
-            }
+            //if (_options.enableFileLogging)
+            //{
+               
+                if(_options.FileOptions != null)
+                {
+                    var fl = new IStackFileLogger(this);
+                    var flOptions = _options.FileOptions;
+                    if(flOptions.enable)
+                    {
+                        await fl.LogInfo(message, logType, flOptions.filePath, flOptions.fileName);
+                    }
+                    
+                }
+                
+            //}
         }
-        private void DoFileLog(StackLogRequest req, string logType)
+        private async Task DoFileLog(StackLogRequest req, string logType)
         {
-            if (_options.enableFileLogging)
-            {
-                var fl = new IStackFileLogger(this);
-                fl.LogInfo(req, logType, _options.filePath);
-            }
+            //if (_options.enableFileLogging)
+            //{
+                
+                if (_options.FileOptions != null)
+                {
+                    var fl = new IStackFileLogger(this);
+                    var flOptions = _options.FileOptions;
+                    if (flOptions.enable)
+                    {
+                        await fl.LogInfo(req, logType, flOptions.filePath, flOptions.fileName);
+                    }
+
+                }
+          //  }
         }
         public async Task LogCloudWatch(StackLogResponse logInformation)
         {

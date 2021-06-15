@@ -65,15 +65,15 @@ namespace StackLog
             _logger = logger;
         }
 
-        public  Task LogInfo(string message, string logType, string path)
+        public  Task LogInfo(string message, string logType, string path, string filename)
         {
            // base.LogInformation(message);
-           return LogToFile(new StackLogRequest(){logMessage = message}, logType, path, logType);
+           return LogToFile(new StackLogRequest(){logMessage = message}, logType, path, filename);
         }
 
-        public Task LogInfo(StackLogRequest req, string logType, string path)
+        public Task LogInfo(StackLogRequest req, string logType, string path, string filename)
         {
-            return LogToFile(req, logType, path, logType);
+            return LogToFile(req, logType, path, filename);
         }
        
         private Task LogToFile(StackLogRequest request, string logType, string path="", string filename="")
@@ -105,8 +105,13 @@ namespace StackLog
                 Directory.CreateDirectory(LogDir);
             }
             
-
             string logFileName = $"{filename}_{DateTime.Today.ToString("ddMMMyyyy")}.stlog";
+
+            if (!String.IsNullOrEmpty(filename))
+            {
+                logFileName = filename+".stlog";
+            }
+            
 
             lock (InfoSyncObj)
             {
