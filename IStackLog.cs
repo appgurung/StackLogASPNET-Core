@@ -22,6 +22,8 @@ namespace StackLog
         Task LogWarning(string message);
         Task LogCloudWatch(StackLogResponse logInformation);
         Task LogError(string message);
+        string bucketKey { get; }
+        string secretKey { get; }
     }
 
     public sealed class StackLog : IStackLog
@@ -167,6 +169,7 @@ namespace StackLog
         {
             //new StackTrace()
             var stackTrace = new StackTrace(es, true).GetFrame(0);
+            //  var stackTrace = es.StackTrace;
             var exceptionObject = new StackLogExceptionInformation()
             {
                 MethodName = stackTrace.GetMethod().Name,
@@ -381,13 +384,16 @@ namespace StackLog
             : throw new StackLogException(StackLogExceptionErrors.NULL_OPTIONS);
         
         
-        public string Secret_Key =>  _options != null
+        private string Secret_Key =>  _options != null
             ? _options.secretKey
             : throw new StackLogException(StackLogExceptionErrors.SECRET_KEY_MISSING);
         
-        public string Bucket_Key =>  _options != null
-            ? _options.secretKey
+        private string Bucket_Key =>  _options != null
+            ? _options.bucketKey
             : throw new StackLogException(StackLogExceptionErrors.BUCKET_KEY_MISSING);
+
+        public string bucketKey { get => Bucket_Key; }
+        public string secretKey { get => Secret_Key;  }
 
         private async Task LogToLoggerService(InitializeStackLog log, string type, StackLogRequest request)
         {

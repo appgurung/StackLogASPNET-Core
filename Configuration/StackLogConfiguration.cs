@@ -25,7 +25,8 @@ namespace StackLog.Configuration
         public const string BUCKET_KEY_MISSING = "bucket key is missing....";
         public const string SECRET_KEY_MISSING = "secret key is missing";
         public const string INSTANCE_REGISTRATION_FAILED = "StackLogger instance failed to register";
-        public const string NULL_OPTIONS = "configuration options is null, please check your settings"; 
+        public const string NULL_OPTIONS = "configuration options is null, please check your settings";
+        public const string OnPrem_BaseUrl_Not_Found = "UseOnPrem was enabled but could not found settings for BaseUrl";
 
         public const string KEY_MISSING = BUCKET_KEY_MISSING + " and/or " + SECRET_KEY_MISSING;
 
@@ -148,9 +149,11 @@ namespace StackLog.Configuration
 
             private async Task HandleExceptionAsync(HttpContext context,Exception es)
             {
-                if(options.secretKey != null || options.secretKey != "") 
+                string secretKey = _logger.secretKey;
+                string bucketKey = _logger.bucketKey;
+                if(secretKey != null || secretKey != "") 
                 {
-                    if(options.bucketKey != null || options.bucketKey != "")
+                    if(bucketKey != null || bucketKey != "")
                     {
                         await _logger.LogFatal(es);
                         return;

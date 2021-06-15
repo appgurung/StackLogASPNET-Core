@@ -26,17 +26,34 @@ namespace StackLog
         private IStackLogHostResponse _response;
 
         private bool enableCloudWatch;
+        string baseUrl = "http://www.stacklog.io:8873/";
         //private IStackLog stakcLog;
         public LoggerService(IStackLogOptions options)
         {
             if(options != null)
             {
-                if(!options.enableFileLogging)
+                if(options.OnPremiseOptions != null)
                 {
-                    if (String.IsNullOrEmpty(options.bucketKey) || String.IsNullOrEmpty(options.secretKey))
+                    if(options.OnPremiseOptions.enable)
                     {
-                        throw new StackLogException(StackLogExceptionErrors.BUCKET_KEY_MISSING + "and or " + StackLogExceptionErrors.SECRET_KEY_MISSING);
+                        if(String.IsNullOrEmpty(options.OnPremiseOptions.baseUrl))
+                        {
+                            throw new StackLogException(StackLogExceptionErrors.OnPrem_BaseUrl_Not_Found);
+                        }
+
+                        baseUrl = options.OnPremiseOptions.baseUrl;
                     }
+                }
+                if(options.FileOptions != null)
+                {
+                    if(!options.FileOptions.enable)
+                    {
+                        if (String.IsNullOrEmpty(options.bucketKey) || String.IsNullOrEmpty(options.secretKey))
+                        {
+                            throw new StackLogException(StackLogExceptionErrors.BUCKET_KEY_MISSING + "and or " + StackLogExceptionErrors.SECRET_KEY_MISSING);
+                        }
+                    }
+                    
                 }
             }
            
@@ -45,7 +62,7 @@ namespace StackLog
                 throw new StackLogException(StackLogExceptionErrors.NULL_OPTIONS);
             }
             stackKey = "cToErsOcQ";
-            host = RestService.For<IStackLogHost>("http://www.stacklog.io:8873/");
+            host = RestService.For<IStackLogHost>(baseUrl);
             this.bucketKey = options.bucketKey;
             this.secretKey = options.secretKey;
             this.enableCloudWatch = options.enableCloudWatch;

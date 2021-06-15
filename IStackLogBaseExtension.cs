@@ -10,10 +10,16 @@ namespace StackLog
     {
         private IStackLog _logger;
 
+      
+
         public StackLogBaseExtension(IStackLog logger)
         {
             _logger = logger;
         }
+
+        public string bucketKey => _logger.bucketKey;
+
+        public string secretKey => _logger.secretKey;
 
         public async Task LogFatal(string message)
         {

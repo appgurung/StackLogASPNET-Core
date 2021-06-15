@@ -11,10 +11,15 @@ namespace StackLog.Configuration
         public bool enableConsoleLogging { get; set; }
         public string filePath { get; set; }
         public FileOptions FileOptions { get; set; }
-        //public Action<FileOptions> fileOptions { get; set; }
+        public OnPremiseOptions OnPremiseOptions { get; set; }
         public string errorViewName { get; set; }
     }
 
+    public class OnPremiseOptions
+    {
+        public bool enable { get; set; }
+        public string baseUrl { get; set; }
+    }
     public class FileOptions
     {
         public bool enable { get; set; }
@@ -32,9 +37,9 @@ namespace StackLog.Configuration
         public string filePath { get; set; }
         public string errorViewName { get; set; }
         public FileOptions FileOptions { get ; set ; }
-        //public Action<FileOptions> fileOptions { get; set; }
-        
-       
+        public OnPremiseOptions OnPremiseOptions { get; set; }
+
+
 
 
         public StackLogOptions()
