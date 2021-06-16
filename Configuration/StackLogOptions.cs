@@ -7,7 +7,7 @@ namespace StackLog.Configuration
         public string secretKey { get; set; }
         public string bucketKey { get; set; }
         public bool enableCloudWatch { get; set; }
-        public bool enableFileLogging { get; set; }
+       // public bool enableFileLogging { get; set; }
         public bool enableConsoleLogging { get; set; }
         public string filePath { get; set; }
         public FileOptions FileOptions { get; set; }
@@ -17,7 +17,7 @@ namespace StackLog.Configuration
 
     public class OnPremiseOptions
     {
-        public bool enable { get; set; }
+       // public bool enable { get; set; }
         public string baseUrl { get; set; }
     }
     public class FileOptions
@@ -31,11 +31,11 @@ namespace StackLog.Configuration
         FileOptions fl = new FileOptions();
         public string secretKey { get; set; } 
         public string bucketKey { get; set; }
-        public bool enableCloudWatch { get; set; }
-        public bool enableFileLogging { get; set; }
-        public bool enableConsoleLogging { get; set; }
+        public bool enableCloudWatch { get; set; } = false;
+        // public bool enableFileLogging { get; set; }
+        public bool enableConsoleLogging { get; set; } = false;
         public string filePath { get; set; }
-        public string errorViewName { get; set; }
+        public string errorViewName { get; set; } = "Error.cshtml";
         public FileOptions FileOptions { get ; set ; }
         public OnPremiseOptions OnPremiseOptions { get; set; }
 

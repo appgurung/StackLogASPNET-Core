@@ -34,15 +34,16 @@ namespace StackLog
             {
                 if(options.OnPremiseOptions != null)
                 {
-                    if(options.OnPremiseOptions.enable)
-                    {
+                   // if()
+                    //if(options.OnPremiseOptions.enable)
+                    //{
                         if(String.IsNullOrEmpty(options.OnPremiseOptions.baseUrl))
                         {
                             throw new StackLogException(StackLogExceptionErrors.OnPrem_BaseUrl_Not_Found);
                         }
 
                         baseUrl = options.OnPremiseOptions.baseUrl;
-                    }
+                    //}
                 }
                 if(options.FileOptions != null)
                 {
