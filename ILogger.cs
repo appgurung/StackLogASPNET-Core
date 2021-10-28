@@ -12,6 +12,8 @@ namespace StackLog
         
         Task Log(StackLogRequest request);
         Task LogCloudWatch(StackLogResponse main);
+
+        void SetBucketKey(string newKey);
     }
 
     public sealed class LoggerService : ILoggerService
@@ -27,6 +29,11 @@ namespace StackLog
 
         private bool enableCloudWatch;
         string baseUrl = "http://www.stacklog.io:8873/";
+
+        public void SetBucketKey(string key)
+        {
+            this.bucketKey = key;
+        }
         //private IStackLog stakcLog;
         public LoggerService(IStackLogOptions options)
         {

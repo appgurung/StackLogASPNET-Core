@@ -5,6 +5,7 @@ using StackLog.Configuration;
 
 namespace StackLog
 {
+    // more researches, more reading and more projects
     public class IStackFileLogger : StackLogBaseExtension
     {
         static WeakReference<object> infoWeakSyncObjectReference;
@@ -124,10 +125,9 @@ namespace StackLog
         public static void WriteLogToFile(string message, string logFilePath, string logType = StackLogType.StackInformation)
         {
             File.AppendAllText(logFilePath, "\r\n");
-            File.AppendAllText(logFilePath, $"[Event Time::{DateTime.Now:hh':'mm':'ss}{logType}{message}]");
+            File.AppendAllText(logFilePath, $"[Event Time::{DateTime.Now:hh':'mm':'ss}| {logType} | {message}]");
             File.AppendAllText(logFilePath, "\r\n");
-           // File.AppendAllText(logFilePath, $"Event Time: {DateTime.Now:hh':'mm':'ss} | {message}\r\n\r\n");
-           // File.AppendAllText(logFilePath, $"------------------------------------------------------------------------------------\r\n\r\n");
+           
         }
 
         private string GetLogType(string logType)

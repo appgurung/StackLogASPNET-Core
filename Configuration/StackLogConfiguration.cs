@@ -100,6 +100,11 @@ namespace StackLog.Configuration
             return options;
         }
 
+        public static bool IsRunningOnNativeMvc()
+        {
+            return true;
+        }
+
         public static IStackLogOptions StaticSetter(StackLogOptions opts)
         {
             return new StackLogOptions()
@@ -108,7 +113,7 @@ namespace StackLog.Configuration
                 secretKey = opts.secretKey,
                 enableCloudWatch = opts.enableCloudWatch,
                  enableConsoleLogging = opts.enableConsoleLogging,
-                  enableFileLogging = opts.enableFileLogging,
+               //   enableFileLogging = opts.enableFileLogging,
                    errorViewName = opts.errorViewName,
                     filePath = opts.filePath
             };

@@ -6,10 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using StackLog.Configuration;
 using Newtonsoft.Json;
+using System.Runtime.InteropServices;
 
 namespace StackLog
 {
-    public sealed class StackLog : IStackLog, IStackLogExtension
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
+    public sealed class StackLog : IStackLog, IStackLogExtension, IStackLogFatalExtension
     {
         protected void Log(InitializeStackLog log, string logType, StackLogRequest loggerRequest)
         {
@@ -20,6 +22,8 @@ namespace StackLog
         private IStackLogOptions _options;
 
         private ILoggerService _log;
+        private InitializeStackLog LogDelegateProp => new InitializeStackLog(CreateLog);
+
 
         private void SetStackLogOptions(IStackLogOptions opts)
         {
@@ -138,7 +142,7 @@ namespace StackLog
 
             //  _log.Log(loggerRequest);
         }
-        public async Task<IStackLog> LogFatal(string message)
+        public async Task<IStackLog> LogFatal(string message, [Optional] string x)
         {
             await DoConsoleLog(message, StackLogType.StackFatal);
             await DoFileLog(message, StackLogType.StackFatal);
@@ -236,7 +240,7 @@ namespace StackLog
             return request;
         }
 
-        public async Task<IStackLog> LogFatal(Exception es)
+        public async Task<IStackLog> LogFatal(Exception es, [Optional] string x)
         {
             var request = CaptureFataInfo(es);
 
@@ -246,7 +250,7 @@ namespace StackLog
             return this;
         }
 
-        public async Task<IStackLog> Info(string message)
+        public async Task<IStackLog> Info(string message, [Optional] string x)
         {
             await DoConsoleLog(message, StackLogType.StackInformation);
             await DoFileLog(message, StackLogType.StackInformation);
@@ -266,7 +270,7 @@ namespace StackLog
             return this;
         }
 
-        public async Task<IStackLog> LogDebug(string message)
+        public async Task<IStackLog> LogDebug(string message, [Optional] string x)
         {
             await DoConsoleLog(message, StackLogType.StackDebug);
             await DoFileLog(message, StackLogType.StackDebug);
@@ -278,7 +282,7 @@ namespace StackLog
             return this;
         }
 
-        public async Task<IStackLog> LogWarning(string message)
+        public async Task<IStackLog> LogWarning(string message, [Optional] string x)
         {
 
             await DoConsoleLog(message, StackLogType.StackWarn);
@@ -361,13 +365,13 @@ namespace StackLog
             }
             //  }
         }
-        public async Task<IStackLog> LogCloudWatch(StackLogResponse logInformation)
+        public async Task<IStackLog> LogCloudWatch(StackLogResponse logInformation, [Optional] string x)
         {
             await _log.LogCloudWatch(logInformation);
             return this;
         }
 
-        public async Task<IStackLog> LogError(string message)
+        public async Task<IStackLog> LogError(string message, [Optional] string x)
         {
             await DoFileLog(message, StackLogType.StackError);
             await LogToLoggerService(LogDelegateProp, StackLogType.StackError, new StackLogRequest()
@@ -378,7 +382,7 @@ namespace StackLog
             return this;
         }
 
-        private InitializeStackLog LogDelegateProp => new InitializeStackLog(CreateLog);
+      
 
         public string ErrorViewName => _options != null
             ? _options.errorViewName
@@ -395,6 +399,23 @@ namespace StackLog
 
         public string bucketKey { get => Bucket_Key; }
         public string secretKey { get => Secret_Key; }
+        /*
+        public IStackLog Fatal
+        {
+            get => new StackLog(_options);
+            
+        }
+        */
+        public StackLogExtension Info(string message)
+        {
+            return new StackLogExtension(StackLogType.StackInformation, _options, message);
+        }
+        //public StackLogExtension Info { get => new StackLogExtension(StackLogType.StackInformation,_options); }
+        public StackLogExtension Debug(string message) => new StackLogExtension(StackLogType.StackDebug, _options, message);
+        public StackLogExtension Warning(string message) => new StackLogExtension(StackLogType.StackWarn, _options, message);
+        public StackLogExtension CloudWatch(StackLogResponse message) => new StackLogExtension(_options, message);
+        public StackLogExtension Error(string errorMessage) => new StackLogExtension(StackLogType.StackError, _options, errorMessage);
+        public StackLogFatalExtension Fatal(Exception es) => new StackLogFatalExtension(_options, es);
 
         private async Task LogToLoggerService(InitializeStackLog log, string type, StackLogRequest request)
         {
@@ -404,14 +425,14 @@ namespace StackLog
 
         }
 
-        public async Task To(string buckey)
+       
+
+        private string GetDebuggerDisplay()
         {
-            throw new NotImplementedException();
+            return ToString();
         }
 
-        public async Task To(params string[] bucketKeys)
-        {
-            throw new NotImplementedException();
-        }
+       // public StackLogExtension LogFatal(Exception es) => new StackLogFatalExtension(_options, es);
+        
     }
 }
