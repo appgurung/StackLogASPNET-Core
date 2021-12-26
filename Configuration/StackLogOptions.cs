@@ -4,15 +4,15 @@ namespace StackLog.Configuration
 {
     public interface IStackLogOptions
     {
-        public string secretKey { get; set; }
-        public string bucketKey { get; set; }
-        public bool enableCloudWatch { get; set; }
+         string secretKey { get; set; }
+         string bucketKey { get; set; }
+         bool enableCloudWatch { get; set; }
        // public bool enableFileLogging { get; set; }
-        public bool enableConsoleLogging { get; set; }
-        public string filePath { get; set; }
-        public FileOptions FileOptions { get; set; }
-        public OnPremiseOptions OnPremiseOptions { get; set; }
-        public string errorViewName { get; set; }
+         bool enableConsoleLogging { get; set; }
+         string filePath { get; set; }
+         FileOptions FileOptions { get; set; }
+         OnPremiseOptions OnPremiseOptions { get; set; }
+         string errorViewName { get; set; }
     }
 
     public class OnPremiseOptions

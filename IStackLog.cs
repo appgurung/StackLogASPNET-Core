@@ -1,11 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Configuration;
-using System.Text;
 using System.Threading.Tasks;
 using StackLog.Configuration;
 using Newtonsoft.Json;
@@ -24,6 +17,10 @@ namespace StackLog
         Task<IStackLog> LogWarning(string message, [Optional] string x);
         Task<IStackLog> LogCloudWatch(StackLogResponse logInformation, [Optional] string x);
         Task<IStackLog> LogError(string message, [Optional] string x);
+        StackLogExtension Info(string message);// { get; }
+        StackLogExtension Debug(string message);
+        StackLogExtension Warning(string message);
+        StackLogExtension CloudWatch(StackLogResponse logInformation);
         
         //Task<IStackLog> Format(string message, object? arg0);
         string bucketKey { get; }

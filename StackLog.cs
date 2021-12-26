@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 namespace StackLog
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
-    public sealed class StackLog : IStackLog, IStackLogExtension, IStackLogFatalExtension
+    public sealed class StackLog : IStackLog, IStackLogFatalExtension
     {
         protected void Log(InitializeStackLog log, string logType, StackLogRequest loggerRequest)
         {
@@ -33,17 +33,7 @@ namespace StackLog
         {
             //TryReadConfiguration(out StackLogOptions result);
 
-            //if (result != null && options == null)
-            //{
-            //    _options = result;
-            //}
-            //else
-            //{
-            //   
-            //}
             _options = options;
-            //options += SetStackLogOptions;
-
             _log = new LoggerService(options);
         }
 
@@ -51,12 +41,7 @@ namespace StackLog
         {
             StackLogOptions _opts = null;
 
-            // var detectRunningPlatForm = RunningOnMvc();
-            //
-            // if (detectRunningPlatForm != null)
-            // {
-            //     _opts = detectRunningPlatForm;
-            // }
+            
             options = _opts;
 
         }
@@ -263,7 +248,7 @@ namespace StackLog
         }
 
 
-        public async Task<IStackLog> Format(string format, object? arg0)
+        public async Task<IStackLog> Format(string format, object arg0)
         {
             string sk = string.Format(format, arg0);
 
@@ -323,8 +308,8 @@ namespace StackLog
                     Console.ForegroundColor = ConsoleColor.Yellow;
                 }
                 Console.WriteLine(msg);
-                Debug.WriteLine(msg);
-                Console.ForegroundColor = ConsoleColor.White;
+                System.Diagnostics.Debug.WriteLine(msg);
+                Console.ForegroundColor = currentColor;
             }
 
 

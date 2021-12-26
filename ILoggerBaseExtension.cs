@@ -20,5 +20,10 @@ namespace StackLog
         {
             await _service.LogCloudWatch(main);
         }
+
+        public void SetBucketKey(string newKey)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-using System.Web.Mvc;
+//using System.Web.Mvc;
 using System.Configuration;
 
 using Microsoft.AspNetCore.Builder;
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using StackLog.HttpModule.Configuration;
+//using StackLog.HttpModule.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 
@@ -177,13 +177,13 @@ namespace StackLog.Configuration
 
        
         // handle mvc request
-        public static void RegisterStackLog(GlobalFilterCollection filter, StackLogOptions options, dynamic context)
-        {
-            var instance = new StackLog(null);
-            context.Items.Add("StackLogInstance", instance);
-            filter.Add(new StackLogGlobalExceptionHandler());
-            filter.Add(new StackLogWebMvcRequestInsight(instance));
-        }
+        // public static void RegisterStackLog(GlobalFilterCollection filter, StackLogOptions options, dynamic context)
+        // {
+        //     var instance = new StackLog(null);
+        //     context.Items.Add("StackLogInstance", instance);
+        //     filter.Add(new StackLogGlobalExceptionHandler());
+        //     filter.Add(new StackLogWebMvcRequestInsight(instance));
+        // }
         
     }
 

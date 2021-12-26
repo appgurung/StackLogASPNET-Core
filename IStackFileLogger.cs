@@ -124,7 +124,7 @@ namespace StackLog
         
         public static void WriteLogToFile(string message, string logFilePath, string logType = StackLogType.StackInformation)
         {
-            File.AppendAllText(logFilePath, "\r\n");
+            //File.AppendAllText(logFilePath, "\r\n");
             File.AppendAllText(logFilePath, $"[Event Time::{DateTime.Now:hh':'mm':'ss}| {logType} | {message}]");
             File.AppendAllText(logFilePath, "\r\n");
            

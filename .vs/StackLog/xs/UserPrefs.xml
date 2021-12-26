@@ -1,11 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workbench ActiveDocument="StackLog.cs">
     <Files>
-      <File FileName="IStackLog.cs" Line="28" Column="11" />
-      <File FileName="IStackLogExtension.cs" Line="16" Column="10" />
-      <File FileName="StackLog.cs" Line="110" Column="37" />
+      <File FileName="IStackLog.cs" Line="24" Column="6" />
+      <File FileName="IStackLogExtension.cs" />
+      <File FileName="StackLog.cs" Line="415" Column="37" />
       <File FileName="StackLogExtension.cs" Line="95" Column="20" />
       <File FileName="ILogger.cs" />
+      <File FileName="IStackLogBaseExtension.cs" Line="23" Column="54" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

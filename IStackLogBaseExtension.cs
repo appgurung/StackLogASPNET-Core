@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using StackLog.Configuration;
 
@@ -21,82 +22,65 @@ namespace StackLog
 
         public string secretKey => _logger.secretKey;
 
-        public async Task LogFatal(string message)
+        public async Task<IStackLog> LogFatal(string message, [Optional] string x)
         {
             await _logger.LogFatal(message);
+            return _logger;
         }
 
-        public async Task LogFatal(Exception es)
+        public async Task<IStackLog> LogFatal(Exception es,  [Optional] string x)
         {
             await _logger.LogFatal(es);
+
+            return _logger;
         }
 
-        public async Task LogInformation(string message)
+        public async Task<IStackLog> Info(string message, [Optional] string x)
         {
-            await _logger.Info(message);
+            await _logger.Info(message, null);
+            return _logger;
         }
 
-        public async Task LogDebug(string message)
+        public async Task<IStackLog> LogDebug(string message, [Optional] string x)
         {
             await _logger.LogDebug(message);
+            return _logger;
         }
 
-        public async Task LogWarning(string message)
+        public async Task<IStackLog> LogWarning(string message, [Optional] string x)
         {
             await _logger.LogWarning(message);
+            return _logger;
         }
 
-        public async Task LogCloudWatch(StackLogResponse logInformation)
+        public async Task<IStackLog> LogCloudWatch(StackLogResponse logInformation, [Optional] string x)
         {
             await _logger.LogCloudWatch(logInformation);
+            return _logger;
         }
 
-        public async Task LogError(string message)
+        public async Task<IStackLog> LogError(string message, [Optional] string y)
         {
             await _logger.LogWarning(message);
+            return this;
         }
 
-        Task<IStackLog> IStackLog.LogFatal(string message)
+        public StackLogExtension Info(string message)
         {
             throw new NotImplementedException();
         }
 
-        Task<IStackLog> IStackLog.LogFatal(Exception es)
+        public StackLogExtension Debug(string message)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IStackLog> Info(string message)
+        public StackLogExtension Warning(string message)
         {
             throw new NotImplementedException();
         }
 
-        Task<IStackLog> IStackLog.LogDebug(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IStackLog> IStackLog.LogWarning(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IStackLog> IStackLog.LogCloudWatch(StackLogResponse logInformation)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IStackLog> IStackLog.LogError(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task To(string buckey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task To(params string[] bucketKeys)
+        public StackLogExtension CloudWatch(StackLogResponse logInformation)
         {
             throw new NotImplementedException();
         }
