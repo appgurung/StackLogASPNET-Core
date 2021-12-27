@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
+    <id>StackLog.Core</id>
+    <version>1.0.27</version>
+    <title>StackLog</title>
+    <authors>info@stacklog.io</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/raimialiu/StackLogSDK.git/</projectUrl>
-    
-    <description>cloud logging...</description>
+    <icon>images\StackLogIcon.jpeg</icon>
+    <description>
+      StackLog helps you push your application logs to a centralize cloud storage. It can detect exceptions automatically and send you instant notification to your slack Channel, email, web hooks. It helps you priortize bug fixes, and assign application stability score to your cloud apps.
+    </description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>cloudwatch errolog exception automaticLogging logging fatal StackLog stacklog stackLog Stacklog</tags>
   </metadata>
+
+   <files>
+    <file src="StackLogIcon.jpeg" target="images\" />
+        <!-- <file src="bin/Debug/net5.0/StackLog.dll" target="dotFiles\" />
+        <file src="bin/Debug/net5.0/StackLog.pdb" target="dotFiles\" /> -->
+        <!-- <file src="bin/Debug/netstandard2.0/StackLog.dll" target="dotFiles\" />
+        <file src="bin/Debug/netstandard2.0/StackLog.pdb" target="dotFiles\" /> -->
+    </files>
+
 </package>
