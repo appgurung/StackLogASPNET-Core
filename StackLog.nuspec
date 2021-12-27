@@ -7,7 +7,7 @@
     <authors>info@stacklog.io</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
-    <projectUrl>https://github.com/raimialiu/StackLogSDK.git/</projectUrl>
+    <projectUrl>https://github.com/appgurung/StackLogASPNET-Core</projectUrl>
     <icon>images\StackLogIcon.jpeg</icon>
     <description>
       StackLog helps you push your application logs to a centralize cloud storage. It can detect exceptions automatically and send you instant notification to your slack Channel, email, web hooks. It helps you priortize bug fixes, and assign application stability score to your cloud apps.
